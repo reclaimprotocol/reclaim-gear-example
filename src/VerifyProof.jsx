@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Reclaim } from "@reclaimprotocol/js-sdk";
-import { gearFunctions } from "./gearJs/GearjsFunctions";
 import { useAccount } from "@gear-js/react-hooks/";
 import { useSendReclaimMessage } from "./gearJs/hooks";
 
@@ -8,30 +7,39 @@ export default function VerifyProof(props) {
   const [proof, setProof] = useState({});
   const [verified, setVerified] = useState(false);
 
-  const { verifyProof } = gearFunctions();
+  const { account, accounts, login } = useAccount();
 
-  const { isAccountReady, account } = useAccount();
-  console.log(account);
+  const loginFunc = async () => {
+    if (accounts){
+    await login(accounts[0])
+    console.log(account)
+    console.log(account.decodedAddress)
+    }
+  }
+
+  loginFunc().then(() => {})
 
   const sendMessage = useSendReclaimMessage();
 
   useEffect(() => {
     
     const newProof = Reclaim.transformForOnchain(props.proof);
-    console.log(newProof);
+
+    newProof.signedClaim.signatures[0] = newProof.signedClaim.signatures[0].replace("0x","");
+    newProof.signedClaim.claim.owner = newProof.signedClaim.claim.owner.replace("0x","");
+    newProof.signedClaim.claim.identifier = newProof.signedClaim.claim.identifier.replace("0x","");
+    
     setProof(newProof);
   }, []);
 
-  return (
+  return ( 
+    account &&
     <div>
       <button
         className="button"
         onClick={async () => {
           try {
-            // await verifyProof(proof);
-            //     payload: {
-            //         VerifyProof: proof
-            //     },
+            
             const payload = {
               VerifyProof: proof,
             };
@@ -40,11 +48,14 @@ export default function VerifyProof(props) {
               onSuccess: () => {
                 setVerified(true);
               },
+              onError: () => {
+                setVerified(false)
+              }
             });
           } catch (e) {
             console.error(e);
           } finally {
-            setVerified(true);
+            setVerified(false);
           }
         }}
       >

@@ -9,12 +9,10 @@ import {
   AccountProvider,
 } from '@gear-js/react-hooks';
 
-const ADDRESS = {
-  NODE: "wss://testnet.vara.network",
-};
+import { GEAR_NODE } from "../config/constants";
 
 function ApiProvider({ children }) {
-  return <GearApiProvider initialArgs={{ endpoint: ADDRESS.NODE }}>{children}</GearApiProvider>;
+  return <GearApiProvider initialArgs={{ endpoint: GEAR_NODE }}>{children}</GearApiProvider>;
 }
 
 const providers = [ApiProvider, AccountProvider];
