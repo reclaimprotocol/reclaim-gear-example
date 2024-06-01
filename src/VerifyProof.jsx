@@ -44,7 +44,9 @@ export default function VerifyProof(props) {
               VerifyProof: proof,
             };
 
-            sendMessage(payload, {
+            const gasLimit = "750000000000"
+
+            sendMessage(payload, gasLimit, {
               onSuccess: () => {
                 setVerified(true);
               },

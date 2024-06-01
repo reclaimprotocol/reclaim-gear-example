@@ -4,8 +4,11 @@ import {
   web3Enable
 } from '@polkadot/extension-dapp';
 
+import { Alert, alertStyles } from '@gear-js/ui';
+
 import {
   ApiProvider as GearApiProvider,
+  AlertProvider as GearAlertProvider,
   AccountProvider,
 } from '@gear-js/react-hooks';
 
@@ -15,7 +18,11 @@ function ApiProvider({ children }) {
   return <GearApiProvider initialArgs={{ endpoint: GEAR_NODE }}>{children}</GearApiProvider>;
 }
 
-const providers = [ApiProvider, AccountProvider];
+function AlertProvider({ children }) {
+  return <GearAlertProvider template={Alert} containerClassName={alertStyles.root}>{children}</GearAlertProvider>;
+}
+
+const providers = [ApiProvider, AlertProvider, AccountProvider];
 
 function withProviders(Component) {
   return () => providers.reduceRight((children, Provider) => <Provider>{children}</Provider>, <Component />);
