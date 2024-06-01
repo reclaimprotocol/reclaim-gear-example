@@ -9,13 +9,13 @@ import { SMOKE_PROOF } from "./config/constants";
 
 function App() {
   const [url, setUrl] = useState("");
-  const [ready, setReady] = useState(true);
-  const [proof, setProof] = useState(SMOKE_PROOF);
+  const [ready, setReady] = useState(false);
+  const [proof, setProof] = useState({});
 
-  const reclaimClient = new Reclaim.ProofRequest("0x3ea68eA270b74442818C534B3071359136571Bb1"); //TODO: replace with your applicationId
+  const reclaimClient = new Reclaim.ProofRequest(""); //TODO: replace with your applicationId
 
   async function generateVerificationRequest() {
-    const providerId = "1bba104c-f7e3-4b58-8b42-f8c0346cdeab"; //TODO: replace with your provider ids you had selected while creating the application
+    const providerId = ""; //TODO: replace with your provider ids you had selected while creating the application
 
     reclaimClient.addContext(
       `user's address`,
@@ -26,7 +26,7 @@ function App() {
 
     reclaimClient.setSignature(
       await reclaimClient.generateSignature(
-        "0x190177013620ff7952630e1fcff4cdd8d51fb159f42557836fd5fd1548649575" //TODO : replace with your APP_SECRET
+        "" //TODO : replace with your APP_SECRET
       )
     );
 
