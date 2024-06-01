@@ -10,73 +10,77 @@ export default function VerifyProof(props) {
   const { account, accounts, login } = useAccount();
 
   const loginFunc = async () => {
-    if (accounts){
-    await login(accounts[0])
-    console.log(account)
-    console.log(account.decodedAddress)
+    if (accounts) {
+      await login(accounts[0]);
+      console.log(account);
+      console.log(account.decodedAddress);
     }
-  }
+  };
 
-  loginFunc().then(() => {})
+  loginFunc().then(() => {});
 
   const sendMessage = useSendReclaimMessage();
 
   useEffect(() => {
-    
     const newProof = Reclaim.transformForOnchain(props.proof);
 
-    newProof.signedClaim.signatures[0] = newProof.signedClaim.signatures[0].replace("0x","");
-    newProof.signedClaim.claim.owner = newProof.signedClaim.claim.owner.replace("0x","");
-    newProof.signedClaim.claim.identifier = newProof.signedClaim.claim.identifier.replace("0x","");
-    
+    newProof.signedClaim.signatures[0] =
+      newProof.signedClaim.signatures[0].replace("0x", "");
+    newProof.signedClaim.claim.owner = newProof.signedClaim.claim.owner.replace(
+      "0x",
+      ""
+    );
+    newProof.signedClaim.claim.identifier =
+      newProof.signedClaim.claim.identifier.replace("0x", "");
+
     setProof(newProof);
   }, []);
 
-  return ( 
-    account &&
-    <div>
-      <button
-        className="button"
-        onClick={async () => {
-          try {
-            
-            const payload = {
-              VerifyProof: proof,
-            };
+  return (
+    account && (
+      <div>
+        <button
+          className="button"
+          onClick={async () => {
+            try {
+              const payload = {
+                VerifyProof: proof,
+              };
 
-            const gasLimit = "750000000000"
-
-            sendMessage(payload, gasLimit, {
-              onSuccess: () => {
-                setVerified(true);
-              },
-              onError: () => {
-                setVerified(false)
-              }
-            });
-          } catch (e) {
-            console.error(e);
-          } finally {
-            setVerified(false);
+              sendMessage({
+                payload: payload,
+                gasLimit: "750000000000",
+                onSuccess: () => {
+                  setVerified(true);
+                },
+                onError: () => {
+                  setVerified(false);
+                },
+              });
+            } catch (e) {
+              console.error(e);
+            } finally {
+              setVerified(false);
+            }
+          }}
+        >
+          Verify Proof
+        </button>
+        {verified && <p> Proof verified </p>}
+        <style jsx="true">{`
+          .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
           }
-        }}
-      >
-        Verify Proof
-      </button>
-      {verified && <p> Proof verified </p>}
-      <style jsx="true">{`
-        .container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-        }
-        .button {
-          border: solid 1px #ccc;
-          margin: 0 0 20px;
-          border-radius: 3px;
-        }
-      `}</style>
-    </div>
+          .button {
+            border: solid 1px #ccc;
+            margin: 0 0 20px;
+            border-radius: 3px;
+          }
+        `}</style>
+      </div>
+    )
   );
 }
