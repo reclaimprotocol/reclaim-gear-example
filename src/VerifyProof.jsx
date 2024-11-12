@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Reclaim } from "@reclaimprotocol/js-sdk";
+import { transformForOnchain } from "@reclaimprotocol/js-sdk";
 import { useAccount } from "@gear-js/react-hooks/";
 import { useSendReclaimMessage } from "./gearJs/hooks";
 
@@ -22,7 +22,7 @@ export default function VerifyProof(props) {
   const sendMessage = useSendReclaimMessage();
 
   useEffect(() => {
-    const newProof = Reclaim.transformForOnchain(props.proof);
+    const newProof = transformForOnchain(props.proof);
 
     newProof.signedClaim.signatures[0] =
       newProof.signedClaim.signatures[0].replace("0x", "");
